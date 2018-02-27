@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
-	version="2.5">
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee   
+          http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	version="3.0">
 	<display-name>wmsfe-server</display-name>
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
@@ -16,12 +16,20 @@
 	<listener>
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
 	</listener>
-
+	<!-- zk 启动监听 -->
+	<listener>
+		<listener-class>org.mycat.web.listen.PublishServiceStartupListener</listener-class>
+	</listener>
 	<listener>
 		<listener-class>jrds.webapp.StartListener</listener-class>
 	</listener>
 	<listener>
 		<listener-class>org.apache.commons.fileupload.servlet.FileCleanerCleanup</listener-class>
+	</listener>
+	
+	<!-- 异步查询mycat数据监听 -->
+	<listener>
+		<listener-class>org.mycat.web.listen.TaskStartupListener</listener-class>
 	</listener>
 	
 	<filter>
@@ -36,29 +44,29 @@
 		<filter-name>characterEncodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	<!-- <servlet> <servlet-name>CXFServlet</servlet-name> <servlet-class>org.apache.cxf.transport.servlet.CXFServlet</servlet-class> 
-		<load-on-startup>1</load-on-startup> </servlet> <servlet-mapping> <servlet-name>CXFServlet</servlet-name> 
-		<url-pattern>/ws/*</url-pattern> </servlet-mapping> -->
+
+
 	<session-config>
 		<session-timeout>40</session-timeout>
 	</session-config>
 
 
-
-	<!-- spring DispatcherServlet -->
+	<!-- spring mvc 拦截器配置 -->
 	<servlet>
-		<servlet-name>springMVC</servlet-name>
+		<servlet-name>springmvc</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
-			<param-value>classpath*:spring/spring-mvc.xml</param-value>
+			<param-value>classpath*:/spring/spring-mvc.xml</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
+		<async-supported>true</async-supported>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>springMVC</servlet-name>
-		<url-pattern>*.do</url-pattern>
+		<servlet-name>springmvc</servlet-name>
+		<url-pattern>/</url-pattern>
 	</servlet-mapping>
+
 
 	
 	    <!-- Jrds -->
@@ -100,38 +108,26 @@
 	</servlet>
 	<servlet>
 		<servlet-name>discover</servlet-name>
-		<display-name>discover</display-name>
-		<description></description>
 		<servlet-class>jrds.webapp.Discover</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>JSonTree</servlet-name>
-		<display-name>JSonTree</display-name>
-		<description></description>
 		<servlet-class>jrds.webapp.JSonTree</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>JSonGraph</servlet-name>
-		<display-name>JSonGraph</display-name>
-		<description></description>
 		<servlet-class>jrds.webapp.JSonGraph</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>JSonPeriod</servlet-name>
-		<display-name>JSonPeriod</display-name>
-		<description></description>
 		<servlet-class>jrds.webapp.JSonPeriod</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>JSonQueryParams</servlet-name>
-		<display-name>JSonQueryParams</display-name>
-		<description></description>
 		<servlet-class>jrds.webapp.JSonQueryParams</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>Cmd</servlet-name>
-		<display-name>Cmd</display-name>
-		<description></description>
 		<servlet-class>
 			jrds.webapp.Cmd</servlet-class>
 	</servlet>
@@ -141,30 +137,20 @@
 		<init-param>
 			<param-name>enabledForExtensions</param-name>
 			<param-value>true</param-value>
-			<description>
-				Sets, whether the servlet supports vendor extensions for
-				XML-RPC.
-          </description>
 		</init-param>
 	</servlet>
 	<servlet>
 		<servlet-name>JSonPack</servlet-name>
-		<display-name>JSonPack</display-name>
-		<description></description>
 		<servlet-class>
 			jrds.webapp.JSonPack</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>upload</servlet-name>
-		<display-name>upload</display-name>
-		<description></description>
 		<servlet-class>
 			jrds.webapp.Upload</servlet-class>
 	</servlet>
 	<servlet>
 		<servlet-name>GetDiscoverHtmlCode</servlet-name>
-		<display-name>GetDiscoverHtmlCode</display-name>
-		<description></description>
 		<servlet-class>
 			jrds.webapp.GetDiscoverHtmlCode</servlet-class>
 	</servlet>
